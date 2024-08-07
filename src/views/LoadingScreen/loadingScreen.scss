@@ -1,0 +1,48 @@
+.loading-screen {
+  // display: flex;
+  // justify-content: center;
+  // align-items: center;
+  // height: 100%;
+    position: fixed;
+  top: 40%;
+  left: 45%;
+  & > img {
+    animation: logo-rotation 1s ease infinite;
+    height: 100px;
+    width: 100px;
+  }
+}
+
+@keyframes logo-rotation {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+// .loading-screen {
+//   position: fixed;
+//   top: 50%;
+//   left: 50%;
+//   transform: translate(-50%, -50%);
+// }
+
+// .loading-screen > img {
+//   animation: logo-flip 1s ease infinite;
+// }
+
+// @keyframes logo-flip {
+//   0% {
+//     transform: translateX(0);
+//   }
+//   50% {
+//     transform: translateX(100%) scaleX(-1);
+//   }
+//   100% {
+//     transform: translateX(0);
+//   }
+// }
+
