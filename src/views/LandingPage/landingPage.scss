@@ -1159,7 +1159,7 @@
       }
 
       .card-right {
-        width: 165px;
+        width: 100% !important;
         height: 165px;
         transition: 0.3s ease;
         background: rgba(120, 199, 83, 0.61);
@@ -1218,7 +1218,7 @@
           &:hover {
             .card-right {
               height: 185px;
-              width: 396px;
+              width: 100% !important;
               border-radius: 15px 15px 0 15px;
 
               .support1 {
@@ -1264,7 +1264,7 @@
           &:hover {
             .card-right {
               height: 185px;
-              width: 396px;
+              width: 100% !important;
               border-radius: 15px 0px 15px 15px;
 
               .support1 {
@@ -1344,7 +1344,7 @@
           &:hover {
             .card-right {
               height: 185px;
-              width: 394px;
+              width: 100% !important;
               border-radius: 15px 15px 15px 0;
               .support1 {
                 bottom: 0;
