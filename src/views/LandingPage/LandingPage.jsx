@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import "./landingPage.scss";
 
 import BGHOME from "../../assets/images/client.png";
@@ -24,24 +24,23 @@ import FACTORYIMAGE2 from "../../assets/images/recyclingFactory2.jpg";
 import FACTORYIMAGE3 from "../../assets/images/recyclingFactory3.jpg";
 import LOGO1 from "../../assets/logos/cocaCola.png";
 import CONTACTUSIMG from "../../assets/icons/contactIcon1.png";
-import FOOTERLOGO from "../../assets/logos/fullLogo.png";
-import factoryThumbnail from "../../assets/images/factoryThumbnail.png";
+
 import VIDEO from "../../assets/videos/videoBg.mp4";
 
 import { IoPlayCircleOutline } from "react-icons/io5";
 import { ImArrowUpRight2 } from "react-icons/im";
-import { FaPlus } from "react-icons/fa6";
+
 import { FaPlay } from "react-icons/fa";
 import { TiArrowRight } from "react-icons/ti";
 import { HiMail } from "react-icons/hi";
 import { BiSolidPhoneCall } from "react-icons/bi";
 import { MdLocationOn } from "react-icons/md";
 import { PiStampBold } from "react-icons/pi";
-import { RiCustomerService2Line } from "react-icons/ri";
+import { FiMail } from "react-icons/fi";
 import { PiBuildingsBold } from "react-icons/pi";
 import { FiSend } from "react-icons/fi";
 import { BiMailSend } from "react-icons/bi";
-import { GrLocation } from "react-icons/gr";
+
 import { FiPhoneCall } from "react-icons/fi";
 
 import ProductsSection from "./ProductsSection";
@@ -49,10 +48,12 @@ import TestimonialsSlider from "./TestimonialsSlider";
 import LeadersSection from "./LeadersSection";
 
 import { UserOutlined } from "@ant-design/icons";
-import { Button, Input } from "antd";
+import { Button, Input, Form } from "antd";
 import { Select, Space } from "antd";
 import { useRef } from "react";
 import { Link } from "react-router-dom";
+
+import Swal from 'sweetalert2'
 
 const LandingPage = () => {
   const [openConatct, setOpenContact] = useState(false);
@@ -77,11 +78,6 @@ const LandingPage = () => {
     console.log("ma position ", position);
   };
 
-  const handleChange = (value) => {
-    console.log(`selected ${value}`);
-  };
-  const { TextArea } = Input;
-
   const [showVideo, setShowVideo] = useState(false);
 
   const toggleVideo = () => {
@@ -95,6 +91,98 @@ const LandingPage = () => {
   const aproposRef = useRef(null);
   const servicesRef = useRef(null);
   const produitsRef = useRef(null);
+
+  // const handleChange = (value) => {
+  //   console.log(`selected ${value}`);
+  // };
+  // const { TextArea } = Input;
+  // START CONTACT SECTION EMAILING CONFIGURATION //
+  // const onSubmit = async (event) => {
+  //   event.preventDefault();
+  //   const formData = new FormData(event.target);
+  //   console.log('DATA : '  , formData , event.target)
+
+  //   formData.append("access_key", "e0cc6370-305c-4982-bd5d-e9144439e0d7");
+
+  //   const object = Object.fromEntries(formData);
+  //   const json = JSON.stringify(object);
+
+  //   const res = await fetch("https://api.web3forms.com/submit", {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       Accept: "application/json",
+  //     },
+  //     body: json,
+  //   }).then((res) => res.json());
+
+  //   if (res.success) {
+  //     console.log("Success", res);
+  //   }
+  // };
+  // END CONTACT SECTION  ENAILING CONFIGURATION //
+
+  const { TextArea } = Input;
+
+  const [service, setService] = useState("Service");
+
+  // Handle service selection
+  const handleChange = (value) => {
+    setService(value); // Store selected value in state
+  };
+
+  // Form submission handler
+  const onFinish = async (values) => {
+    console.log("💥 ENTERED THE SUBMIT FN", values);
+
+    const formData = new FormData();
+    // Append all values from the form
+    Object.keys(values).forEach((key) => {
+      formData.append(key, values[key]);
+    });
+
+    formData.append("access_key", "e0cc6370-305c-4982-bd5d-e9144439e0d7");
+
+    console.log("💥 FORMDATA ", formData);
+    // Convert formData to JSON
+    const object = Object.fromEntries(formData);
+    const json = JSON.stringify(object);
+
+    try {
+      const res = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: json,
+      });
+
+      const result = await res.json();
+
+      if (result.success) {
+        console.log("Success", result);
+        Swal.fire({
+          title: "Bravo !",
+          text: "L'équipe Mezoughi a bien reçu votre message .",
+          icon: "success",
+          confirmButtonText: "Merci",
+          customClass: {
+            confirmButton: 'custom-confirm-button'
+          }
+        });
+      } else {
+        console.log("Failed", result);
+        Swal.fire({
+          title: "Erreur !",
+          text: "Une erreur s'est produite lors de l'envoi de votre message .",
+          icon: "error"
+        });
+      }
+    } catch (err) {
+      console.error("Error submitting the form", err);
+    }
+  };
 
   return (
     <div className="page-container">
@@ -179,6 +267,7 @@ const LandingPage = () => {
           </div>
         </div>
         <div className="home-section-center">DURABILITE EN ACTION</div>
+
         <div className="home-section-bottom">
           <div className="home-section-bottom-left">
             <div className="left">
@@ -213,6 +302,7 @@ const LandingPage = () => {
                 </div>
               </div>
             </div>
+
             <div className="right">
               <img src={FACTORY} alt="" />
             </div>
@@ -221,9 +311,7 @@ const LandingPage = () => {
             <div className="card-stat">
               <div className="card-top">
                 <div className="stat">25</div>
-                <div className="plus-icon">
-                  {/* <FaPlus /> */}
-                </div>
+                <div className="plus-icon">{/* <FaPlus /> */}</div>
               </div>
               <div className="card-bottom">Ans Expérience</div>
             </div>
@@ -231,9 +319,7 @@ const LandingPage = () => {
             <div className="card-stat">
               <div className="card-top">
                 <div className="stat">60 </div>
-                <div className="plus-icon">
-                  {/* <FaPlus /> */}
-                </div>
+                <div className="plus-icon">{/* <FaPlus /> */}</div>
               </div>
               <div className="card-bottom">Clients Statisfaits</div>
             </div>
@@ -241,10 +327,7 @@ const LandingPage = () => {
             <div className="card-stat">
               <div className="card-top">
                 <div className="stat">30</div>
-                <div className="plus-icon">
-                  
-                  {/* <FaPlus /> */}
-                </div>
+                <div className="plus-icon">{/* <FaPlus /> */}</div>
               </div>
               <div className="card-bottom">Produits Fabriqués</div>
             </div>
@@ -722,12 +805,19 @@ const LandingPage = () => {
             <img src={CONTACTUSIMG} alt="" />
           </div>
           <div className="contact-right">
-            <div className="form-wrapper">
+            {/* <form className="form-wrapper" onSubmit={onSubmit}>
               <div className="form-section">
-                <Input placeholder="Nom et Prénom" prefix={<UserOutlined />} />
+                <Input
+                  placeholder="Nom et Prénom"
+                  name="name"
+                  prefix={<UserOutlined />}
+                  required
+                />
                 <Input
                   placeholder="Nom de la Sociéte"
                   prefix={<PiBuildingsBold />}
+                  name="companyname"
+                  required
                 />
               </div>
 
@@ -735,6 +825,8 @@ const LandingPage = () => {
                 <Input
                   placeholder="Registre de commerce / VAT"
                   prefix={<PiStampBold />}
+                  name="companytype"
+                  required
                 />
                 <Select
                   defaultValue="Service"
@@ -756,6 +848,8 @@ const LandingPage = () => {
                       label: "Autre",
                     },
                   ]}
+                  name="companyservice"
+                  required
                 />
               </div>
               <div className="form-section">
@@ -763,12 +857,108 @@ const LandingPage = () => {
                   rows={4}
                   placeholder="Message ..."
                   className="message-input"
+                  name="message"
+                  required
                 />
               </div>
-              <Button icon={<FiSend />} className="send-btn">
+              <Button icon={<FiSend />} className="send-btn" type="submit">
                 Envoyer
               </Button>
-            </div>
+            </form> */}
+
+            <Form className="form-wrapper" onFinish={onFinish}>
+              <div className="form-section">
+                <Form.Item
+                  name="Email"
+                  rules={[
+                    { required: true, message: "Ce Champs est requis !" },
+                  ]}
+                >
+                  <Input
+                    placeholder="Email Professionnel"
+                    prefix={<FiMail  />}
+                  />
+                </Form.Item>
+
+                <Form.Item
+                  name="Nom de la Société"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Ce Champs est requis !",
+                    },
+                  ]}
+                >
+                  <Input
+                    placeholder="Nom de la Société"
+                    prefix={<PiBuildingsBold />}
+                  />
+                </Form.Item>
+              </div>
+
+              <div className="form-section">
+                <Form.Item
+                  name="Registre de commerce / VAT"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Ce Champs est requis !",
+                    },
+                  ]}
+                >
+                  <Input
+                    placeholder="Registre de commerce / VAT"
+                    prefix={<PiStampBold />}
+                  />
+                </Form.Item>
+
+                <Form.Item name="Service" initialValue="Service">
+                  <Select
+                    style={{ width: 120 }}
+                    onChange={handleChange}
+                    options={[
+                      { value: "vente", label: "Vente" },
+                      { value: "achat", label: "Achat" },
+                      { value: "autre", label: "Autre" },
+                    ]}
+
+                    rules={[
+                      {
+                        required: true,
+                        message: "Ce Champs est requis !",
+                      },
+                    ]}
+
+                  />
+                </Form.Item>
+              </div>
+
+              <div className="form-section">
+                <Form.Item
+                  name="Message"
+                  rules={[
+                    { required: true, message: "Ce Champs est requis !" },
+                  ]}
+                >
+                  <TextArea
+                    rows={4}
+                    placeholder="Message ..."
+                    className="message-input"
+                  />
+                </Form.Item>
+              </div>
+
+              <Form.Item>
+                <Button
+                  icon={<FiSend />}
+                  className="send-btn"
+                  type="primary"
+                  htmlType="submit"
+                >
+                  Envoyer
+                </Button>
+              </Form.Item>
+            </Form>
           </div>
         </div>
       </div>
