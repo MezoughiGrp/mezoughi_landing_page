@@ -53,7 +53,7 @@ import { Select, Space } from "antd";
 import { useRef } from "react";
 import { Link } from "react-router-dom";
 
-import Swal from 'sweetalert2'
+import Swal from "sweetalert2";
 
 const LandingPage = () => {
   const [openConatct, setOpenContact] = useState(false);
@@ -91,36 +91,11 @@ const LandingPage = () => {
   const aproposRef = useRef(null);
   const servicesRef = useRef(null);
   const produitsRef = useRef(null);
+  const contactRef = useRef(null);
 
-  // const handleChange = (value) => {
-  //   console.log(`selected ${value}`);
-  // };
-  // const { TextArea } = Input;
   // START CONTACT SECTION EMAILING CONFIGURATION //
-  // const onSubmit = async (event) => {
-  //   event.preventDefault();
-  //   const formData = new FormData(event.target);
-  //   console.log('DATA : '  , formData , event.target)
 
-  //   formData.append("access_key", "e0cc6370-305c-4982-bd5d-e9144439e0d7");
-
-  //   const object = Object.fromEntries(formData);
-  //   const json = JSON.stringify(object);
-
-  //   const res = await fetch("https://api.web3forms.com/submit", {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //       Accept: "application/json",
-  //     },
-  //     body: json,
-  //   }).then((res) => res.json());
-
-  //   if (res.success) {
-  //     console.log("Success", res);
-  //   }
-  // };
-  // END CONTACT SECTION  ENAILING CONFIGURATION //
+  const [form] = Form.useForm();
 
   const { TextArea } = Input;
 
@@ -132,19 +107,15 @@ const LandingPage = () => {
   };
 
   // Form submission handler
+ 
   const onFinish = async (values) => {
-    console.log("💥 ENTERED THE SUBMIT FN", values);
-
     const formData = new FormData();
-    // Append all values from the form
     Object.keys(values).forEach((key) => {
       formData.append(key, values[key]);
     });
 
     formData.append("access_key", "e0cc6370-305c-4982-bd5d-e9144439e0d7");
 
-    console.log("💥 FORMDATA ", formData);
-    // Convert formData to JSON
     const object = Object.fromEntries(formData);
     const json = JSON.stringify(object);
 
@@ -162,27 +133,51 @@ const LandingPage = () => {
 
       if (result.success) {
         console.log("Success", result);
+
+        form.resetFields();
+
+        if (window.gtag) {
+          window.gtag("event", "form_submission", {
+            event_category: "Contact Form",
+            event_label: "Submission Success",
+            value: 1,
+          });
+        }
+
+
         Swal.fire({
-          title: "Bravo !",
+          title: "Succès !",
           text: "L'équipe Mezoughi a bien reçu votre message .",
           icon: "success",
           confirmButtonText: "Merci",
           customClass: {
-            confirmButton: 'custom-confirm-button'
-          }
+            confirmButton: "custom-confirm-button",
+          },
         });
+        
       } else {
         console.log("Failed", result);
+        if (window.gtag) {
+          window.gtag("event", "form_submission", {
+            event_category: "Contact Form",
+            event_label: "Submission Failure",
+            value: 0,
+          });
+        }
         Swal.fire({
           title: "Erreur !",
           text: "Une erreur s'est produite lors de l'envoi de votre message .",
-          icon: "error"
+          icon: "error",
         });
       }
     } catch (err) {
       console.error("Error submitting the form", err);
+      message.error(
+        "Une erreur s'est produite lors de l'envoi de votre message."
+      );
     }
   };
+  // END CONTACT SECTION  ENAILING CONFIGURATION //
 
   return (
     <div className="page-container">
@@ -225,6 +220,12 @@ const LandingPage = () => {
               onClick={() => scrollToSection(produitsRef)}
             >
               Produits
+            </li>
+            <li
+              className="menu-item"
+              onClick={() => scrollToSection(contactRef)}
+            >
+              Contact
             </li>
           </ul>
         </div>
@@ -789,7 +790,7 @@ const LandingPage = () => {
       <div className="divider"></div>
 
       {/* Start Contact Section */}
-      <div className="contact-section-wrapper">
+      <div className="contact-section-wrapper" ref={contactRef}>
         <div className="contact-us-title">
           <div className="contact-us-title1">CONTACTEZ-NOUS</div>
           <div className="contact-us-title2">
@@ -805,68 +806,7 @@ const LandingPage = () => {
             <img src={CONTACTUSIMG} alt="" />
           </div>
           <div className="contact-right">
-            {/* <form className="form-wrapper" onSubmit={onSubmit}>
-              <div className="form-section">
-                <Input
-                  placeholder="Nom et Prénom"
-                  name="name"
-                  prefix={<UserOutlined />}
-                  required
-                />
-                <Input
-                  placeholder="Nom de la Sociéte"
-                  prefix={<PiBuildingsBold />}
-                  name="companyname"
-                  required
-                />
-              </div>
-
-              <div className="form-section">
-                <Input
-                  placeholder="Registre de commerce / VAT"
-                  prefix={<PiStampBold />}
-                  name="companytype"
-                  required
-                />
-                <Select
-                  defaultValue="Service"
-                  style={{
-                    width: 120,
-                  }}
-                  onChange={handleChange}
-                  options={[
-                    {
-                      value: "vente",
-                      label: "Vente",
-                    },
-                    {
-                      value: "achat",
-                      label: "Achat",
-                    },
-                    {
-                      value: "autre",
-                      label: "Autre",
-                    },
-                  ]}
-                  name="companyservice"
-                  required
-                />
-              </div>
-              <div className="form-section">
-                <TextArea
-                  rows={4}
-                  placeholder="Message ..."
-                  className="message-input"
-                  name="message"
-                  required
-                />
-              </div>
-              <Button icon={<FiSend />} className="send-btn" type="submit">
-                Envoyer
-              </Button>
-            </form> */}
-
-            <Form className="form-wrapper" onFinish={onFinish}>
+            <Form className="form-wrapper" onFinish={onFinish} form={form}>
               <div className="form-section">
                 <Form.Item
                   name="Email"
@@ -876,7 +816,7 @@ const LandingPage = () => {
                 >
                   <Input
                     placeholder="Email Professionnel"
-                    prefix={<FiMail  />}
+                    prefix={<FiMail />}
                   />
                 </Form.Item>
 
@@ -921,14 +861,12 @@ const LandingPage = () => {
                       { value: "achat", label: "Achat" },
                       { value: "autre", label: "Autre" },
                     ]}
-
                     rules={[
                       {
                         required: true,
                         message: "Ce Champs est requis !",
                       },
                     ]}
-
                   />
                 </Form.Item>
               </div>
