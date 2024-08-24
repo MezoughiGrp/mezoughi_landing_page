@@ -1,30 +1,40 @@
 import { StrictMode } from "react";
 import "./index.scss";
-
 import { Analytics } from "@vercel/analytics/react";
-
 import { createRoot } from "react-dom/client";
-import { renderRoutes } from "./routes";
-
 import { BrowserRouter } from "react-router-dom";
+import { renderRoutes } from "./routes";
 import routes from "./routes";
 
-import ReactGA from 'react-ga'
+const GA_MEASUREMENT_ID = "G-EEYBFX4JHZ";
 
-import usePageViews from "./hooks/usePageViews";
+// Load and initialize gtag.js
+const initializeGtag = () => {
+  // Load gtag.js
+  const script = document.createElement("script");
+  script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`;
+  script.async = true;
+  document.head.appendChild(script);
 
+  script.onload = () => {
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+      window.dataLayer.push(arguments);
+    }
+    window.gtag = gtag;
+    gtag("js", new Date());
+    gtag("config", GA_MEASUREMENT_ID);
+  };
+};
 
-const GA_MEASUREMENT_ID = 'G-EEYBFX4JHZ';
-
-ReactGA.initialize(GA_MEASUREMENT_ID);
-
-ReactGA.pageview(window.location.pathname + window.location.search);
-
+// Initialize Google Analytics
+initializeGtag();
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <BrowserRouter>{renderRoutes(routes)}</BrowserRouter>
-    <usePageViews />
-    <Analytics />
+    <BrowserRouter>
+      {renderRoutes(routes)}
+      <Analytics />
+    </BrowserRouter>
   </StrictMode>
 );
