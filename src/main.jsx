@@ -32,9 +32,7 @@ initializeGtag();
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <BrowserRouter>
-      {renderRoutes(routes)}
-      <Analytics />
-    </BrowserRouter>
+    <BrowserRouter>{renderRoutes(routes)}</BrowserRouter>
+    <Analytics />
   </StrictMode>
 );
